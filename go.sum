@@ -10,6 +10,10 @@ github.com/alterminal/auth v0.0.0-20241224134709-1468cab838b5 h1:lCiKTfvEYJNdx3+
 github.com/alterminal/auth v0.0.0-20241224134709-1468cab838b5/go.mod h1:Z3O5ykCwZY8kdqs2TIX4b5z/sGXY++bcquve4BaH4L4=
 github.com/alterminal/auth v0.0.0-20241224142218-486e1265fb09 h1:keHFQaZZpwCGZk66sH8Nzmf/HZxRdx3B+GPRi1qRt04=
 github.com/alterminal/auth v0.0.0-20241224142218-486e1265fb09/go.mod h1:Z3O5ykCwZY8kdqs2TIX4b5z/sGXY++bcquve4BaH4L4=
+github.com/alterminal/auth v0.0.0-20241224143714-1261fa67445b h1:5az7DmNSY2lQBZ+Ad7cxuqfdN0EogTC6z9lLKecXp/M=
+github.com/alterminal/auth v0.0.0-20241224143714-1261fa67445b/go.mod h1:Z3O5ykCwZY8kdqs2TIX4b5z/sGXY++bcquve4BaH4L4=
+github.com/alterminal/auth v0.0.0-20241224144618-6846f3919dc6 h1:E/AjR+eWk0nI/xhXasD8SvOyE3jDMlO2TnWHbVwKmfI=
+github.com/alterminal/auth v0.0.0-20241224144618-6846f3919dc6/go.mod h1:Z3O5ykCwZY8kdqs2TIX4b5z/sGXY++bcquve4BaH4L4=
 github.com/alterminal/common v0.0.0-20241223015459-c33178311020 h1:hgwRfsOQNnH/f0L6qj9BU83h/Kc4jO8fuLjuN++Pf9U=
 github.com/alterminal/common v0.0.0-20241223015459-c33178311020/go.mod h1:nWzDacYZ6FV+/6LgzS3ZtKR0jU4J1DiJ0Ly6Zk89lQM=
 github.com/bwmarrin/snowflake v0.3.0 h1:xm67bEhkKh6ij1790JB83OujPR5CzNe8QuQqAgISZN0=

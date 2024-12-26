@@ -1,0 +1,452 @@
+openapi: 3.0.3
+info:
+  title: Member as a service
+  description: |-
+    Member as a service API.
+  contact:
+    email: chenyunda218@gmail.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+servers:
+  - url: https://petstore3.swagger.io/api/v3
+tags:
+  - name: account
+paths:
+  /account:
+    post:
+      tags:
+        - account
+      summary: Create account
+      description: Create account
+      operationId: createAccount
+      requestBody:
+        description: Create account request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateAccountRequest'
+        required: true
+      responses:
+        '201':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          $ref: '#/components/responses/InvalidInputError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '409':
+          $ref: '#/components/responses/ConflictError'
+    get:
+      tags:
+        - account
+      summary: Get account
+      description: Get account
+      operationId: getAccount
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/idby'
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/account'
+        - $ref: '#/components/parameters/email'
+        - $ref: '#/components/parameters/phoneRegion'
+        - $ref: '#/components/parameters/phoneNumber'
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          $ref: '#/components/responses/InvalidInputError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /account/password:
+    put:
+      tags:
+        - account
+      summary: Update password
+      description: Update password
+      operationId: updatePassword
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/account'
+        - $ref: '#/components/parameters/email'
+        - $ref: '#/components/parameters/phoneRegion'
+        - $ref: '#/components/parameters/phoneNumber'
+      requestBody:
+        description: Update password request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                password:
+                  type: string
+              required:
+                - password
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          $ref: '#/components/responses/InvalidInputError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+    delete:
+      tags:
+        - account
+      summary: Delete account
+      description: Delete account
+      operationId: deleteAccount
+      parameters:
+        - $ref: '#/components/parameters/namespace'
+        - $ref: '#/components/parameters/id'
+        - $ref: '#/components/parameters/account'
+        - $ref: '#/components/parameters/email'
+        - $ref: '#/components/parameters/phoneRegion'
+        - $ref: '#/components/parameters/phoneNumber'
+      responses:
+        '204':
+          description: successful operation
+        '400':
+          $ref: '#/components/responses/InvalidInputError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /sessions:
+    post:
+      tags:
+        - account
+      summary: Create session
+      description: Create session
+      operationId: createSession
+      requestBody:
+        description: Create session request
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateSessionRequest'
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  token:
+                    type: string
+        '400':
+          $ref: '#/components/responses/InvalidInputError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /sessions/retrieve:
+    post:
+      tags:
+        - account
+      summary: Retrieve session
+      description: Retrieve session
+      operationId: retrieveSession
+      requestBody:
+        description: Retrieve session request
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                token:
+                  type: string
+              required:
+                - token
+        required: true
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Account'
+        '400':
+          $ref: '#/components/responses/InvalidInputError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+        '404':
+          $ref: '#/components/responses/NotFoundError'
+  /accounts:
+    get:
+      tags:
+        - account
+      summary: Get account
+      description: Get account
+      operationId: getAccount
+      parameters:
+        - name: namespace
+          in: query
+          description: namespace
+          required: true
+          schema:
+            type: string
+        - name: page
+          in: query
+          description: page
+          schema:
+            description: page. Start from 0
+            type: integer
+            default: 0
+            format: int64
+        - name: limit
+          in: query
+          description: limit
+          schema:
+            default: 10
+            description: limit. Default 10
+            type: integer
+            format: int64
+        - name: phoneRegion
+          in: query
+          description: phoneRegion
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountList'
+        '400':
+          $ref: '#/components/responses/InvalidInputError'
+        '401':
+          $ref: '#/components/responses/UnauthorizedError'
+components:
+  schemas:
+    IdGenerator:
+      type: object
+      description: id generator. If not provided, uuid will be used.
+      properties:
+        type:
+          type: string
+          enum:
+            - snowflake
+            - uuid
+    CreateAccountRequest:
+      type: object
+      description: |
+        Create account request. If id is not provided, it will be generated by idGenerator.
+      properties:
+        namespace:
+          type: string
+        id:
+          type: string
+        idGenerator:
+          $ref: '#/components/schemas/IdGenerator'
+        account:
+          type: string
+        email:
+          type: string
+        phoneRegion:
+          type: string
+        phoneNumber:
+          type: string
+        password:
+          type: string
+      required:
+        - namespace
+    Account:
+      type: object
+      properties:
+        namespace:
+          type: string
+        id:
+          type: string
+        account:
+          type: string
+        email:
+          type: string
+        phoneRegion:
+          type: string
+        phoneNumber:
+          type: string
+        createdAt:
+          type: integer
+          format: int64
+        updatedAt:
+          type: integer
+          format: int64
+      required:
+        - namespace
+        - id
+    AccountList:
+      type: object
+      properties:
+        items:
+          description: List of accounts
+          type: array
+          items:
+            $ref: '#/components/schemas/Account'
+        total:
+          description: total items
+          type: integer
+          format: int64
+        limit:
+          description: items per page
+          type: integer
+          format: int64
+        page:
+          description: current page
+          type: integer
+          format: int64
+        pages:
+          description: total pages.
+          type: integer
+          format: int64
+    CreateSessionRequest:
+      type: object
+      properties:
+        namespace:
+          type: string
+        idby:
+          type: string
+          enum:
+            - id
+            - account
+            - email
+            - phone
+        account:
+          type: string
+        email:
+          type: string
+        phoneRegion:
+          type: string
+        phoneNumber:
+          type: string
+        password:
+          type: string
+      required:
+        - namespace
+        - password
+    ErrorResponse:
+      type: object
+      properties:
+        statusCode:
+          type: integer
+        code:
+          type: string
+        message:
+          type: string
+    
+  securitySchemes:
+    petstore_auth:
+      type: oauth2
+      flows:
+        implicit:
+          authorizationUrl: https://petstore3.swagger.io/oauth/authorize
+          scopes:
+            write:pets: modify pets in your account
+            read:pets: read your pets
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
+  responses:
+    UnauthorizedError:
+      description: Unauthorized
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    NotFoundError:
+      description: Not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    InvalidInputError:
+      description: Invalid input
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+    ConflictError:
+      description: Conflict
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+  parameters:
+    namespace:
+      name: namespace
+      in: query
+      description: namespace
+      required: true
+      schema:
+        type: string
+    idby:
+      name: idby
+      in: query
+      description: identify by
+      schema:
+        type: string
+        enum:
+          - id
+          - account
+          - email
+          - phone
+    id:
+      name: id
+      in: query
+      description: id
+      schema:
+        type: string
+    account:
+      name: account
+      in: query
+      description: account
+      schema:
+        type: string
+    email:
+      name: email
+      in: query
+      description: email
+      schema:
+        type: string
+    phoneRegion:
+      name: phoneRegion
+      in: query
+      description: phoneRegion
+      schema:
+        type: string
+    phoneNumber:
+      name: phoneNumber
+      in: query
+      description: phoneNumber
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      description: page
+      schema:
+        description: page. Start from 0
+        type: integer
+        default: 0
+        format: int64

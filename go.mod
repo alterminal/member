@@ -3,7 +3,7 @@ module github.com/alterminal/member
 go 1.22.5
 
 require (
-	github.com/alterminal/auth v0.0.0-20241224142218-486e1265fb09 // indirect
+	github.com/alterminal/auth v0.0.0-20241224144618-6846f3919dc6 // indirect
 	github.com/alterminal/common v0.0.0-20241223015459-c33178311020 // indirect
 	github.com/bwmarrin/snowflake v0.3.0 // indirect
 	github.com/bytedance/sonic v1.12.6 // indirect
