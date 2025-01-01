@@ -163,6 +163,8 @@ func Run(db *gorm.DB, authClient sdk.Client) {
 	router.GET("/spaces/:id/children", IsSpaceAdmin(db), api.SpaceChildren)
 	router.POST("/spaces/:id/subscriptionPlan", IsSpaceAdmin(db), api.CreateSubscriptionPlan)
 	router.GET("/spaces/:id/subscriptionPlan", IsSpaceAdmin(db), api.ListSubscriptionPlans)
+	router.POST("/subscriptionPlan/:id/subscription", api.CreateSubscription)
+	router.DELETE("/subscriptions/:id", api.CancelSubscription)
 	router.GET("/roles", IsTenant, api.ListMyRoles)
 	router.Run(":8080")
 }
@@ -433,7 +435,7 @@ func (a *Api) CreateSubscriptionPlan(ctx *gin.Context) {
 		ctx.JSON(400, gin.H{"error": "invalid request"})
 		return
 	}
-	subscriptionPlan, err := space.CreateSubscriptionPlan(a.db, request.Currency, request.Price)
+	subscriptionPlan, err := space.CreateSubscriptionPlan(a.db, request.PlanName, request.PaymentGateway, request.Currency, request.Price)
 	if err != nil {
 		ctx.JSON(500, gin.H{
 			"error": "internal server error",
@@ -446,4 +448,49 @@ func (a *Api) CreateSubscriptionPlan(ctx *gin.Context) {
 func (a *Api) ListSubscriptionPlans(ctx *gin.Context) {
 	space := ctx.MustGet("space").(model.Space)
 	ctx.JSON(200, space.SubscriptionPlans(a.db))
+}
+
+func (a *Api) CreateSubscription(ctx *gin.Context) {
+	id := ctx.Param("id")
+	var subscriptionPlan model.SubscriptionPlan
+	err := a.db.First(&subscriptionPlan, id).Error
+	if err != nil {
+		ctx.JSON(404, gin.H{"error": "subscription plan not found"})
+		return
+	}
+	sub, err := subscriptionPlan.CreateSubscription(a.db)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.JSON(201, gin.H{"paymentLink": sub.Link, "id": sub.ID})
+}
+
+func (a *Api) CancelSubscription(ctx *gin.Context) {
+	id := ctx.Param("id")
+	var subscription model.Subscription
+	err := a.db.First(&subscription, id).Error
+	if err != nil {
+		ctx.JSON(404, gin.H{"error": "subscription not found"})
+		return
+	}
+	var request CancelSubscriptionRequest
+	if err := ctx.ShouldBindJSON(&request); err != nil {
+		ctx.JSON(400, gin.H{"error": "invalid request"})
+		return
+	}
+	if subscription.Secret != request.Secret {
+		ctx.JSON(401, gin.H{"error": "unauthorized"})
+		return
+	}
+	if subscription.CanceledAt != nil {
+		ctx.JSON(400, gin.H{"error": "subscription already canceled"})
+		return
+	}
+	err = subscription.Cancel(a.db)
+	if err != nil {
+		ctx.JSON(500, gin.H{"error": err.Error()})
+		return
+	}
+	ctx.Status(204)
 }

@@ -12,6 +12,12 @@ type CreateConsumerRequest struct {
 }
 
 type CreateSubscriptionPlanRequest struct {
-	Currency string `json:"currency"`
-	Price    int    `json:"price"`
+	PaymentGateway string `json:"paymentGateway"`
+	PlanName       string `json:"planName"`
+	Currency       string `json:"currency"`
+	Price          int    `json:"price"`
+}
+
+type CancelSubscriptionRequest struct {
+	Secret string `json:"secret"`
 }

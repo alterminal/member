@@ -8,6 +8,7 @@ import (
 	"github.com/alterminal/member/api"
 	"github.com/alterminal/member/repo"
 	"github.com/spf13/viper"
+	"github.com/stripe/stripe-go/v81"
 	"gorm.io/driver/mysql"
 	"gorm.io/gorm"
 )
@@ -22,6 +23,7 @@ func init() {
 	viper.SetConfigName(".env")
 	viper.SetConfigType("yaml")
 	viper.ReadInConfig()
+	stripe.Key = viper.GetString("stripe.key")
 }
 
 func main() {

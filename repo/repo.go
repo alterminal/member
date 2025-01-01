@@ -13,6 +13,13 @@ func Init(db *gorm.DB) {
 	db.AutoMigrate(&model.Space{})
 	db.AutoMigrate(&model.SubscriptionPlan{})
 	db.AutoMigrate(&model.Subscription{})
+	var subscriptions []model.Subscription
+	db.Where("completed_at IS NULL").
+		Where("canceled_at IS NULL").
+		Find(&subscriptions)
+	for _, subscription := range subscriptions {
+		go subscription.Watch(db)
+	}
 }
 
 func AccountRoles(db *gorm.DB, account authModel.Account) []model.Role {
